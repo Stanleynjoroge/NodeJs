@@ -1,5 +1,4 @@
 [
-
   {
     "id": "fe212ba3-a4fe-4ab5-a328-a36150f399df",
     "productName": "Soda",
@@ -34,5 +33,35 @@
     "id": "5a638919-730e-4dcd-a91e-7dee54b3baa9",
     "Name": "Cat",
     "Price": 388
+  },
+  {
+    "id": "a77b86c2-a152-48f7-9e8f-d61fad1da483",
+    "Name": "Dog",
+    "Price": 377,
+    "Description": "nice dog"
+  },
+  {
+    "id": "8ecd1618-9ab4-4b11-90bd-aac9e20884f2",
+    "Name": "Dog",
+    "Price": 377,
+    "Description": "nice dog"
+  },
+  {
+    "id": "a495d266-726f-4000-b0e5-48f681e207f5",
+    "Name": "Dog",
+    "Price": 344,
+    "Description": "nice dog"
+  },
+  {
+    "id": "c5275707-52bb-4c1b-afa8-7b6b0ea1947f",
+    "Name": "Dog",
+    "Price": "3",
+    "Description": "nice dog"
+  },
+  {
+    "id": "8c6366c3-f3f3-4c31-9e82-24b6d4b82cd1",
+    "Name": "Dog",
+    "Price": 334,
+    "Description": "nice dog"
   }
 ]

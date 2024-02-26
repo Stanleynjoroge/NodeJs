@@ -1,52 +1,80 @@
-import fs from "fs";
+// Import required modules
 import express from "express";
-import myDb from "./myDb/myDb.json" assert { type: "json" };
-import addJsonData from "../src/addJson.js";
+import { validationResult } from "express-validator";
+import { body } from "express-validator";
+import { addJsonData, deleteDataById, updateDataById } from "./functions.mjs";
+import myDb from "./myDb/myDb.json" assert {type:"json"}
 
-const PORT = 3000;
+// Define your custom middleware
+const myMiddleware = [
+  // Escape and sanitize input fields
+  body("Name").escape(),
+  body("Description").escape(),
+  // Validate fields
+  body("Name").isString(),
+  body("Price").isNumeric(),
+  body("Description").isString().isLength({ min: 5, max: 100 }),
+];
+
+
 const app = express();
+
+
 app.use(express.json());
+app.use(myMiddleware);
+
 
 app.get("/", (req, res) => {
   res.status(200).send("I am healthy 💪");
-  console.log("i am very health Stanley🤣🤣🤣");
+  console.log("I am very healthy Stanley🤣🤣🤣");
 });
+
 app.get("/myDb", (req, res) => {
   res.status(200).send(myDb);
 });
+
 app.post("/myDb", async (req, res) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { Name, Price, Description } = req.body;
   try {
     const newJson = await addJsonData(Name, Price, Description);
-    res.status(201).json(newJson).send(myDb);
+    res.status(201).json(newJson);
   } catch (error) {
-    console.error("An error occurred:", error);
-    res.status(500).send("Error adding data to myDb.json");
+    console.error("An error occurred:", error.message);
+    res.status(500).send(error.message);
   }
 });
-app.delete("/myDb/:id", (req, res) => {
+
+app.delete("/myDb/:id", async (req, res) => {
   const myspaceId = req.params.id;
   try {
-    const newData = myDb.filter((item) => item.id !== myspaceId);
-
-    if (newData.length === myDb.length) {
-      return res.status(404).send("Data with provided ID not found");
-    }
-
-    fs.writeFileSync("myDb/myDb.json", JSON.stringify(newData, null, 2));
-
-    res.send("Deleted successfully");
+    const result = await deleteDataById(myspaceId);
+    res.send(result);
   } catch (error) {
-    console.error("An error occurred:", error);
-    res.status(500).send("Error deleting data from myDb.json");
+    console.error("An error occurred:", error.message);
+    res.status(500).send(error.message);
   }
 });
-app.put("/myDd", (req, res) => {
 
-    
+app.put("/myDb/:id", async (req, res) => {
+  const myspaceId = req.params.id;
+  const newData = req.body;
+  try {
+    const result = await updateDataById(myspaceId, newData);
+    res.send(result);
+  } catch (error) {
+    console.error("An error occurred:", error.message);
+    res.status(500).send(error.message);
+  }
 });
 
 
-app.listen(PORT, "localhost", function () {
-  console.log(`Server is Listening at Port: ${PORT}!`);
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is listening at Port: ${PORT}!`);
 });
